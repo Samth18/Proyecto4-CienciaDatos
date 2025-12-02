@@ -52,5 +52,31 @@
 
 ---
 
-Fecha de elaboración: 2025-12-02
+## Conclusiones
+
+### Hallazgos principales
+
+- El pipeline de preparación limpió y dejó un dataset reproducible listo para modelado (`02_Data/processed/telco_churn_processed.csv`).
+- Se detectó que `totalcharges` se importó inicialmente como texto; se convirtió a numérico y se limpiaron los registros inválidos.
+- Se unificaron valores categóricos problemáticos (por ejemplo, `no internet service` / `no phone service` → `no`) y se aplicó codificación one‑hot, lo que facilita el entrenamiento de modelos.
+- Existe un desbalance notable en la variable objetivo (~73% `No` vs ~27% `Yes`), por lo que es necesario priorizar métricas que reduzcan falsos negativos (Recall) y evaluar estrategias para manejar el desbalance.
+- Variables con potencial predictivo observadas en la exploración incluyen: `contract` (tipo de contrato), `tenure`, `monthlycharges`, `paymentmethod` y servicios contratados (p. ej. `onlinesecurity`, `streamingtv`).
+
+### Limitaciones
+
+- El análisis y los artefactos se basan en una instantánea de datos; los modelos entrenados pueden degradarse si cambian las condiciones comerciales o la oferta de servicios.
+- Se eliminaron las filas con `totalcharges` inválidos (casos relativamente pocos). Si hubiera más valores faltantes, haría falta una estrategia de imputación más robusta.
+- Aún no se han ejecutado ni comparado exhaustivamente modelos avanzados (XGBoost/LightGBM) ni técnicas de explicabilidad como SHAP; por tanto, las conclusiones sobre importancia de variables son preliminares.
+- Riesgo de sesgo: hay que revisar variables demográficas (p. ej. `SeniorCitizen`) para evitar decisiones que puedan afectar grupos vulnerables.
+
+### Siguientes pasos recomendados
+
+1. Ejecutar la fase de modelado y registrar métricas reproducibles (train/validation/test) usando validación temporal cuando sea posible.
+2. Realizar análisis de importancia de características con métodos robustos (SHAP o Permutation) para explicar predicciones y facilitar decisiones de negocio.
+3. Experimentar con técnicas para el desbalance (resampling, ponderación de clases, ajuste de umbral) y priorizar soluciones que mejoren Recall sin degradar excesivamente Precision.
+4. Validar modelos con pruebas A/B en campañas piloto de retención y medir impacto en KPIs financieros (retención, CLV, ROI de campaña).
+5. Preparar un prototipo de scoring reproducible (batch o API) y construir un dashboard para monitoreo de performance y alertas de deriva de datos.
+
+---
+
 
